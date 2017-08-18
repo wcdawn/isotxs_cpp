@@ -2,7 +2,17 @@
 # include <fstream> // std::ifstream, etc.
 # include <sstream> // std::stringstream
 
+# include <array>
+
+
 std::stringstream msg;
+
+struct ISOTXS
+{
+  std::array<char,8> hname;
+  std::array<std::array<char,8>,2> huse;
+  int16_t ivers;
+};
 
 // TO-DO: write raiseWarn()
 void raiseFatal()
@@ -22,6 +32,21 @@ void raiseFatal()
   exit(1);
 }
 
+void bRead(std::ifstream &file, auto &var)
+{
+  file.read((char*) &var, sizeof(var));
+}
+
+void recordChange(std::ifstream &file)
+{
+  int16_t zero;
+  int16_t number;
+  bRead(file,number);
+  bRead(file,zero);
+  std::cout << "number: " << number << '\n';
+  std::cout << "zero:   " << zero   << '\n';
+}
+
 int main()
 {
   // TO-DO: this should be a command line argument
@@ -35,13 +60,44 @@ int main()
     raiseFatal();
   }
 
+  ISOTXS iso_data;
+  
   // begin actually reading the file
-  const int RECORD_DELIMITER_LENGTH = 4;
-  myFile.seekg(RECORD_DELIMITER_LENGTH, std::ios::cur);
-  myFile.read((char*) &buffer,1000);
-  for (int i{0}; i < 1000; ++i)
-    std::cout << buffer[i];
-  std::cout << '\n';
+  // REMINDER: how big is everything? character(8), real(4), integer(?)
+//  myFile.read((char*) &zero,sizeof(zero));
+  recordChange(myFile);
+  std::cout << '*';
+  for (unsigned int i{0}; i < iso_data.hname.size(); ++i)
+  {
+    bRead(myFile,iso_data.hname[i]);
+    std::cout << iso_data.hname[i];
+  }
+  std::cout << "*\n";
+  for (unsigned int i{0}; i < iso_data.huse.size(); ++i)
+  {
+    std::cout << '*';
+    for (unsigned int j{0}; j < iso_data.huse[i].size(); ++j)
+    {
+      bRead(myFile,iso_data.huse[i][j]);
+      std::cout << iso_data.huse[i][j];
+    }
+    std::cout << "*\n";
+  }
+  recordChange(myFile);
+  recordChange(myFile);
+  std::cout << "--- end1\n";
+  recordChange(myFile);
+  
+
+
+
+
+
+  //int nbPoints;
+  //myFile.seekg(RECORD_DELIMITER_LENGTH, std::ios::cur);
+  //myFile.read((char*) &nbPoints, sizeof(nbPoints));
+
+
 
   myFile.close();
 
