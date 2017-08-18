@@ -34,6 +34,48 @@ struct ISOTXS
 
   std::vector<std::vector<float>> chi_fw;
   std::vector<int32_t> isspec;
+
+  std::array<char,holl_len> habsid;
+  std::array<char,holl_len> hident;
+  std::array<char,holl_len> hmat;
+  float amass;
+  float efiss;
+  float ecapt;
+  float temp;
+  float sigpot;
+  float adens;
+  int32_t kbr;
+  int32_t ichi;
+  int32_t ifis;
+  int32_t ialf;
+  int32_t inp;
+  int32_t in2n;
+  int32_t ind;
+  int32_t intritium;
+  int32_t ltot;
+  int32_t ltrn;
+  int32_t istrpd;
+  std::vector<int32_t> idsct;
+  std::vector<int32_t> lord;
+  std::vector<std::vector<int32_t>> jband;
+  std::vector<std::vector<int32_t>> ijj;
+
+  std::vector<std::vector<float>> strpl;
+  std::vector<std::vector<float>> stotpl;
+  std::vector<float> sngam;
+  std::vector<float> sfis;
+  std::vector<float> snutot;
+  std::vector<float> chiso;
+  std::vector<float> snalf;
+  std::vector<float> snp;
+  std::vector<float> sn2n;
+  std::vector<float> snd;
+  std::vector<float> snt;
+
+  std::vector<std::vector<float>> chiiso;
+  std::vector<float> isopec;
+
+  std::vector<std::vector<std::vector<float>>> scat;
 };
 
 // TO-DO: move these to another file
@@ -77,12 +119,9 @@ void bRead(std::ifstream &file, auto &var)
 
 void recordChange(std::ifstream &file)
 {
-  int32_t zero;
   int32_t number;
   bRead(file,number);
-//  bRead(file,zero);
   std::cout << "number: " << number << '\n';
-//  std::cout << "zero:   " << zero   << '\n';
 }
 
 void vectorRead(std::ifstream &file, std::vector<auto> &vec)
@@ -91,10 +130,27 @@ void vectorRead(std::ifstream &file, std::vector<auto> &vec)
     bRead(file,vec[i]);
 }
 
+void matrixRead(std::ifstream &file, std::vector<std::vector<auto>> &mat)
+{
+  for (unsigned int i{0}; i < mat.capacity(); ++i)
+  {
+    for (unsigned int j{0}; j < mat[i].capacity(); ++j)
+    {
+      bRead(file,mat[i][j]);
+    }
+  }
+}
+
+void holl_arrayRead(std::ifstream &file, std::array<auto,holl_len> &array)
+{
+  for (unsigned int i{0}; i < array.size(); ++i)
+    bRead(file,array[i]);
+}
+
 void dummyInt(std::ifstream &file)
 {
   int32_t itemp;
-  for (int i{0}; i < 30; ++i)
+  for (int i{0}; i < 100; ++i)
   {
     bRead(file,itemp);
     std::cout << itemp << '\n';
@@ -122,6 +178,7 @@ int main()
   // REMINDER: how big is everything? character(8), real(4), integer(?)
 //  myFile.read((char*) &zero,sizeof(zero));
   recordChange(myFile);
+  /*
   std::cout << '*';
   for (unsigned int i{0}; i < iso_data.hname.size(); ++i)
   {
@@ -129,15 +186,11 @@ int main()
     std::cout << iso_data.hname[i];
   }
   std::cout << "*\n";
+  */
+  holl_arrayRead(myFile,iso_data.hname);
   for (unsigned int i{0}; i < iso_data.huse.size(); ++i)
   {
-    std::cout << '*';
-    for (unsigned int j{0}; j < iso_data.huse[i].size(); ++j)
-    {
-      bRead(myFile,iso_data.huse[i][j]);
-      std::cout << iso_data.huse[i][j];
-    }
-    std::cout << "*\n";
+    holl_arrayRead(myFile,iso_data.huse[i]);
   }
   bRead(myFile,iso_data.ivers);
   recordChange(myFile);
@@ -166,6 +219,20 @@ int main()
     iso_data.chi_fw[i].reserve(iso_data.ngroup);
   iso_data.isspec.reserve(iso_data.ngroup);
 
+  std::cout << "nscmax: " << iso_data.nscmax << '\n';
+  iso_data.idsct.reserve(iso_data.nscmax);
+  iso_data.lord.reserve(iso_data.nscmax);
+  iso_data.jband.reserve(iso_data.nscmax);
+  for (unsigned int i{0}; i < iso_data.jband.capacity(); ++i)
+    iso_data.jband[i].reserve(iso_data.ngroup);
+  iso_data.ijj.reserve(iso_data.nscmax);
+  for (unsigned int i{0}; i < iso_data.ijj.capacity(); ++i)
+    iso_data.ijj[i].reserve(iso_data.ngroup);
+
+
+
+
+
 
 
 
@@ -178,23 +245,13 @@ int main()
   }
   recordChange(myFile);
   std::cout << "--- end 1D\n";
-  recordChange(myFile);
   for (unsigned int i{0}; i < iso_data.hsetid.size(); ++i)
   {
-    for (unsigned int j{0}; j < iso_data.hsetid[i].size(); ++j)
-    {
-      bRead(myFile,iso_data.hsetid[i][j]);
-    }
+    holl_arrayRead(myFile,iso_data.hsetid[i]);
   }
   for (unsigned int i{0}; i < iso_data.hisonm.capacity(); ++i)
   {
-    std::cout << '*';
-    for (unsigned int j{0}; j < iso_data.hisonm[i].size(); ++j)
-    {
-      bRead(myFile,iso_data.hsetid[i][j]);
-      std::cout << iso_data.hsetid[i][j];
-    }
-    std::cout << "*\n";
+    holl_arrayRead(myFile,iso_data.hisonm[i]);
   }
   if (iso_data.ichist == 1)
   {
@@ -203,6 +260,7 @@ int main()
   vectorRead(myFile,iso_data.vel);
   vectorRead(myFile,iso_data.emax);
   bRead(myFile,iso_data.emin);
+  recordChange(myFile);
   vectorRead(myFile,iso_data.loca);
   recordChange(myFile);
   std::cout << "--- end 2D\n";
@@ -211,8 +269,124 @@ int main()
     msg << "this is untested. no file from the test suite has ichist > 1\n";
     raiseWarn();
     recordChange(myFile);
-    // matrixRead(myFile,iso_data.chi_fw);
+    matrixRead(myFile,iso_data.chi_fw);
     vectorRead(myFile,iso_data.isspec);
+    recordChange(myFile);
+    std::cout << "--- end 3D\n";
+  }
+  for (int i{0}; i < iso_data.niso; ++i);
+  {
+    recordChange(myFile);
+    holl_arrayRead(myFile,iso_data.habsid);
+    holl_arrayRead(myFile,iso_data.hident);
+    holl_arrayRead(myFile,iso_data.hmat);
+    bRead(myFile,iso_data.amass);
+    bRead(myFile,iso_data.efiss);
+    bRead(myFile,iso_data.ecapt);
+    bRead(myFile,iso_data.temp);
+    bRead(myFile,iso_data.sigpot);
+    bRead(myFile,iso_data.adens);
+    bRead(myFile,iso_data.kbr);
+    bRead(myFile,iso_data.ichi);
+    bRead(myFile,iso_data.ifis);
+    bRead(myFile,iso_data.ialf);
+    bRead(myFile,iso_data.inp);
+    bRead(myFile,iso_data.in2n);
+    bRead(myFile,iso_data.ind);
+    bRead(myFile,iso_data.intritium);
+    bRead(myFile,iso_data.ltot);
+    bRead(myFile,iso_data.ltrn);
+    bRead(myFile,iso_data.istrpd);
+    vectorRead(myFile,iso_data.idsct);
+    vectorRead(myFile,iso_data.lord);
+    matrixRead(myFile,iso_data.jband);
+    matrixRead(myFile,iso_data.ijj);
+    if (iso_data.istrpd != 0)
+    {
+      msg << "istrpd != 0\n";
+      msg << "this mode is not supported\n";
+      msg << "istrpd: " << iso_data.istrpd << '\n';
+      raiseFatal();
+    }
+    recordChange(myFile);
+    
+    
+    iso_data.strpl.reserve(iso_data.ltrn);
+    for (unsigned int i{0}; i < iso_data.strpl.capacity(); ++i)
+      iso_data.strpl[i].reserve(iso_data.ngroup);
+    iso_data.stotpl.reserve(iso_data.ltot);
+    for (unsigned int i{0}; i < iso_data.stotpl.capacity(); ++i)
+      iso_data.stotpl[i].reserve(iso_data.ngroup);
+    iso_data.sngam.reserve(iso_data.ngroup);
+    iso_data.sfis.reserve(iso_data.ngroup);
+    iso_data.snutot.reserve(iso_data.ngroup);
+    iso_data.chiso.reserve(iso_data.ngroup);
+    iso_data.snalf.reserve(iso_data.ngroup);
+    iso_data.snp.reserve(iso_data.ngroup);
+    iso_data.sn2n.reserve(iso_data.ngroup);
+    iso_data.snd.reserve(iso_data.ngroup);
+    iso_data.snt.reserve(iso_data.ngroup);
+    
+    iso_data.chiiso.reserve(iso_data.ngroup);
+    for (unsigned int i{0}; i < iso_data.chiiso.capacity(); ++i)
+      iso_data.chiiso[i].reserve(iso_data.ichi);
+    iso_data.isopec.reserve(iso_data.ngroup);
+
+
+    std::cout << "--- end 4D\n";
+    recordChange(myFile);
+    matrixRead(myFile,iso_data.strpl);
+    matrixRead(myFile,iso_data.stotpl);
+    vectorRead(myFile,iso_data.sngam);
+    // TO-DO: make sure all xs initialized to 0.0
+    if (iso_data.ifis > 0)
+    {
+      vectorRead(myFile,iso_data.sfis);
+      vectorRead(myFile,iso_data.snutot);
+    }
+    if (iso_data.ichi == 1)
+      vectorRead(myFile,iso_data.chiso);
+    if (iso_data.ialf > 0)
+      vectorRead(myFile,iso_data.snalf);
+    if (iso_data.inp > 0)
+      vectorRead(myFile,iso_data.snp);
+    if (iso_data.in2n > 0)
+      vectorRead(myFile,iso_data.sn2n);
+    if (iso_data.ind > 0)
+      vectorRead(myFile,iso_data.snd);
+    if (iso_data.intritium > 0)
+      vectorRead(myFile,iso_data.snt);
+    recordChange(myFile);
+    std::cout << "--- end 5D\n";
+    if (iso_data.ichi > 1)
+    {
+      msg << "this is untested. no file from the test suite has ichi > 1\n";
+      raiseWarn();
+      recordChange(myFile);
+      matrixRead(myFile,iso_data.chiiso);
+      vectorRead(myFile,iso_data.isopec);
+      recordChange(myFile);
+    }
+
+    iso_data.scat.reserve(iso_data.nscmax);
+    for (int j{0}; j < iso_data.nscmax; ++j)
+    {
+      if (iso_data.lord[j] > 0)
+      {
+        recordChange(myFile);
+        int kmax{0};
+        for (int k{0}; k < iso_data.ngroup; ++k)
+          kmax += iso_data.jband[k][j];
+        iso_data.scat[j].reserve(kmax);
+        for (unsigned int k{0}; k < iso_data.scat[j].capacity(); ++k)
+          iso_data.scat[j][k].reserve(iso_data.lord[j]);
+        matrixRead(myFile,iso_data.scat[j]);
+        recordChange(myFile);
+      }
+    }
+
+
+
   }
 
 
