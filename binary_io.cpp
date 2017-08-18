@@ -376,7 +376,7 @@ int main()
         recordChange(myFile);
         int kmax{0};
         for (int k{0}; k < iso_data.ngroup; ++k)
-          kmax += iso_data.jband[k][j];
+          kmax += iso_data.jband[j][k];
         iso_data.scat[j].reserve(kmax);
         for (unsigned int k{0}; k < iso_data.scat[j].capacity(); ++k)
           iso_data.scat[j][k].reserve(iso_data.lord[j]);
