@@ -2,7 +2,7 @@
 
 FC = g++
 FLAGS = -std=c++14 -Wall -g
-OBJS = binary_io.o
+OBJS = exception_handler.o binary_io.o
 EXEC = isotxs_cpp.exe
 
 $(EXEC) : $(OBJS)

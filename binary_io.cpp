@@ -1,4 +1,4 @@
-# include <iostream> // std::cout, etc.
+# include <iostream>
 # include <fstream> // std::ifstream, etc.
 # include <sstream> // std::stringstream
 
@@ -6,42 +6,7 @@
 # include <vector>
 
 # include "isotxs_struct.h"
-
-std::stringstream msg;
-
-// TO-DO: move these to another file
-void raiseFatal()
-{
-  std::cout << std::string(80,'*') << '\n';
-  for (int i{0}; i < 13; ++i)
-    std::cout << "FATAL ";
-  std::cout << std::string(2,'\n');
-  std::cout << msg.str();
-  std::cout << '\n';
-  for (int i{0}; i < 13; ++i)
-    std::cout << "FATAL ";
-  std::cout << '\n';
-  std::cout << std::string(80,'*') << '\n';
-  msg.str("");
-  msg.clear();
-  exit(1);
-}
-
-void raiseWarn()
-{
-  std::cout << std::string(80,'.') << '\n';
-  for (int i{0}; i < 10; ++i)
-    std::cout << "WARNING ";
-  std::cout << std::string(2,'\n');
-  std::cout << msg.str();
-  std::cout << '\n';
-  for (int i{0}; i < 10; ++i)
-    std::cout << "WARNING ";
-  std::cout << '\n';
-  std::cout << std::string(80,'.') << '\n';
-  msg.str("");
-  msg.clear();
-}
+# include "exception_handler.h"
 
 void bRead(std::ifstream &file, auto &var)
 {
@@ -78,17 +43,6 @@ void holl_arrayRead(std::ifstream &file, std::array<auto,holl_len> &array)
     bRead(file,array[i]);
 }
 
-void dummyInt(std::ifstream &file)
-{
-  int32_t itemp;
-  for (int i{0}; i < 100; ++i)
-  {
-    bRead(file,itemp);
-    std::cout << itemp << '\n';
-  }
-}
-
-
 int main()
 {
   // TO-DO: this should be a command line argument
@@ -106,18 +60,7 @@ int main()
   ISOTXS iso_data;
   
   // begin actually reading the file
-  // REMINDER: how big is everything? character(8), real(4), integer(?)
-//  myFile.read((char*) &zero,sizeof(zero));
   recordChange(myFile);
-  /*
-  std::cout << '*';
-  for (unsigned int i{0}; i < iso_data.hname.size(); ++i)
-  {
-    bRead(myFile,iso_data.hname[i]);
-    std::cout << iso_data.hname[i];
-  }
-  std::cout << "*\n";
-  */
   holl_arrayRead(myFile,iso_data.hname);
   for (unsigned int i{0}; i < iso_data.huse.size(); ++i)
   {
