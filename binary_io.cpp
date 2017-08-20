@@ -47,12 +47,12 @@ int main()
 {
   // TO-DO: this should be a command line argument
   std::string fname("ISOTXS.u235");
+  fname = "ISOTXS.soft_fuel";
   // open the file as a binary file
   // TO-DO: look into endian-ness
   std::ifstream myFile (fname.c_str(), std::ios::in | std::ios::binary);
   if (!myFile)
   {
-    msg.str("");
     msg << "failed to open " << fname << '\n';
     raiseFatal();
   }
@@ -256,6 +256,7 @@ int main()
         matrixRead(myFile,iso_data.scat[j]);
         recordChange(myFile);
         std::cout << "--- end 7D\n";
+        // TO-DO: .resize(0)
       }
     }
 

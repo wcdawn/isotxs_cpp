@@ -2,7 +2,7 @@
 # include <string>
 # include <sstream>
 
-static std::stringstream msg;
+std::stringstream msg;
 
 // TO-DO: move these to another file
 void raiseFatal()
