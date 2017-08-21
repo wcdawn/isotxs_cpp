@@ -2,6 +2,8 @@
 # include <fstream> // std::ifstream, etc.
 # include <sstream> // std::stringstream
 
+# include <cstdlib>
+
 # include <array>
 # include <vector>
 
@@ -41,6 +43,19 @@ void holl_arrayRead(std::ifstream &file, std::array<auto,holl_len> &array)
 {
   for (unsigned int i{0}; i < array.size(); ++i)
     bRead(file,array[i]);
+}
+
+void isotxsWrite(const ISOTXS &iso)
+{
+  std::ofstream outf("wm_format.out");
+
+  // if we couldn't open the output file steream for writing
+  if (!outf)
+  {
+    // print an error and exit
+    std::cerr << "hey dummy, sample.dat could not be opened for writing\n";
+    exit(1);
+  }
 }
 
 int main()
@@ -208,10 +223,24 @@ int main()
 
     std::cout << "--- end 4D\n";
     recordChange(myFile);
+    for (int32_t g{0}; g < iso_data.ngroup; ++g)
+    {
+      iso_data.sngam[g] = 0.0f;
+      iso_data.sfis[g] = 0.0f;
+      iso_data.snutot[g] = 0.0f;
+      iso_data.chiso[g] = 0.0f;
+      iso_data.snalf[g] = 0.0f;
+      iso_data.snp[g] = 0.0f;
+      iso_data.sn2n[g] = 0.0f;
+      iso_data.snd[g] = 0.0f;
+      iso_data.snt[g] = 0.0f;
+    } 
     matrixRead(myFile,iso_data.strpl);
     matrixRead(myFile,iso_data.stotpl);
     vectorRead(myFile,iso_data.sngam);
     // TO-DO: make sure all xs initialized to 0.0
+
+
     if (iso_data.ifis > 0)
     {
       vectorRead(myFile,iso_data.sfis);
@@ -259,11 +288,9 @@ int main()
         // TO-DO: .resize(0)
       }
     }
-
-
-
   }
 
+  // TO-DO: isotxsWrite(iso_data);
 
 
 
