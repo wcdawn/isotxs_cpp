@@ -1,0 +1,105 @@
+*ISOTXS  *	HNAME	hollerith file name - ISOTXS
+*        *	HUSE(0)	hollerith user identification
+*        *	HUSE(1)	hollerith user identification
+0	IVERS	file version number
+
+FILE CONTROL    (1D RECORD)
+33	NGROUP	number of energy groups in file
+1	NISO	number of isotopes in file
+0	MAXUP	maximum number of upscatter groups
+32	MAXDN	maximum number of downscatter groups
+1	MAXORD	maximum scattering order
+0	ICHIST	file-wide fission spectrum flag
+5	NSCMAX	maximum number of blocks of scattering data
+1	NSBLOK	subblocking control for scatter matricies
+HSETID	hollerith identification of file
+*        **        **        **        **        **        **        **        **        **        **        **        *
+HISONM	hollerith isotope label for isotope i
+*U235_X  *
+VEL	mean neutron velocity in group j [cm/s]
+4.574280e+09
+3.679656e+09
+2.942667e+09
+2.324955e+09
+1.818873e+09
+1.417983e+09
+1.106862e+09
+8.671789e+08
+6.777493e+08
+5.300120e+08
+4.141474e+08
+3.231339e+08
+2.522901e+08
+1.961858e+08
+1.528936e+08
+1.193548e+08
+9.277978e+07
+7.229514e+07
+5.606013e+07
+4.356993e+07
+3.399587e+07
+2.641954e+07
+2.045609e+07
+1.599357e+07
+1.229608e+07
+9.626767e+06
+7.658340e+06
+5.990957e+06
+4.607991e+06
+3.340357e+06
+2.167436e+06
+9.557307e+05
+8.918263e+05
+EMAX	maximum energy bound of group j [eV]
+1.831563e+05
+1.110899e+05
+6.737939e+04
+4.086767e+04
+2.478750e+04
+1.503438e+04
+9.118811e+03
+5.530839e+03
+3.354624e+03
+2.034683e+03
+1.234097e+03
+7.485179e+02
+4.539991e+02
+2.753644e+02
+1.670170e+02
+1.013009e+02
+6.144210e+01
+3.726651e+01
+2.260328e+01
+1.370958e+01
+8.315281e+00
+3.927860e+00
+5.315781e-01
+4.174578e-01
+EMIN	minimum energy bound of set [eV]
+0.000000e+00
+LOCA	number of records to be skipped to read data for isotope i
+0
+********************************************************************************
+INDIVIDUAL ISOTOPIC DATA
+********************************************************************************
+ISOTOPE CONTROL AND GROUP INDEPENDENT DATA    (4D RECORD)
+*U235_7  *	HABSID	hollerith absolute isotope label
+*        *	HIDENT	identifier of library from which basic data came
+*        *	HMAT	isotope identification
+2.350439e+02	AMASS	gram atomic weight
+3.099798e-11	EFISS	total thermal energy yield/fission [W*s/fiss]
+1.048606e-12	ECAPT	total thermal energy yield/capture [W*s/capt]
+3.000000e+02	TEMP	isotope temperature [K]
+1.158599e+01	SIGPOT	average effective potential scattering in resonance range [barns/atom]
+1.000000e+00	ADENS	density of isotoope in mixture in which isotope cross sections were generated (atom/barn/cm)
+0	KBR	itoopte classification (see documentation)
+1	ICHI	isotope fission spectrum flag
+1	IFIS	(n,f) crosss section flag
+0	IALF	(n,alpha) cross section flag
+0	INP	(n,p) cross section flag
+1	IN2N	(n,2n) cross section flag
+0	IND	(n,D) cross section flag
+0	INT	(n,T) cross section flag
+2	LTOT	number of moments of total cross section provided
+1	LTRN	number of moments of transport cross section
+0	ISTRPD	number of coordinate directions .. (must == 0)

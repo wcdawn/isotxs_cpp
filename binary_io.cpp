@@ -1,6 +1,7 @@
 # include <iostream>
 # include <fstream> // std::ifstream, etc.
 # include <sstream> // std::stringstream
+# include <iomanip> // std::setprecision
 
 # include <cstdlib>
 
@@ -45,6 +46,16 @@ void holl_arrayRead(std::ifstream &file, std::array<auto,holl_len> &array)
     bRead(file,array[i]);
 }
 
+// TO-DO: move this to an output file
+void holl_arrayWrite(std::ofstream &file, const std::array<auto,holl_len> &array)
+{
+  file << '*';
+  for (unsigned int i{0}; i < array.size(); ++i)
+    file << array[i];
+  file << '*';
+}
+
+// TO-DO: move this to an output file
 void isotxsWrite(const ISOTXS &iso)
 {
   std::ofstream outf("wm_format.out");
@@ -56,13 +67,93 @@ void isotxsWrite(const ISOTXS &iso)
     std::cerr << "hey dummy, sample.dat could not be opened for writing\n";
     exit(1);
   }
+
+  outf << std::scientific;
+  outf << std::setprecision(6);
+  holl_arrayWrite(outf,iso.hname); 
+  outf << "\tHNAME\thollerith file name - ISOTXS\n";
+  for (unsigned int i{0}; i < iso.huse.size(); ++i)
+  {
+    holl_arrayWrite(outf,iso.huse[i]);
+    outf << "\tHUSE(" << i << ")\thollerith user identification\n";
+  }
+  outf << iso.ivers << "\tIVERS\tfile version number\n";
+  
+  outf << "\nFILE CONTROL    (1D RECORD)\n";
+  outf << iso.ngroup << "\tNGROUP\tnumber of energy groups in file\n";
+  outf << iso.niso << "\tNISO\tnumber of isotopes in file\n";
+  outf << iso.maxup << "\tMAXUP\tmaximum number of upscatter groups\n";
+  outf << iso.maxdn << "\tMAXDN\tmaximum number of downscatter groups\n";
+  outf << iso.maxord << "\tMAXORD\tmaximum scattering order\n";
+  outf << iso.ichist << "\tICHIST\tfile-wide fission spectrum flag\n";
+  outf << iso.nscmax << "\tNSCMAX\tmaximum number of blocks of scattering data\n";
+  outf << iso.nsblok << "\tNSBLOK\tsubblocking control for scatter matricies\n";
+  
+  outf << "HSETID\thollerith identification of file\n";
+  for (unsigned int i{0}; i < iso.hsetid.size(); ++i)
+  {
+    holl_arrayWrite(outf,iso.hsetid[i]);
+  }
+  outf << '\n';
+  outf << "HISONM\thollerith isotope label for isotope i\n";
+  for (unsigned int i{0}; i < iso.hisonm.capacity(); ++i)
+  {
+    holl_arrayWrite(outf,iso.hisonm[i]);
+    outf << '\n';
+  }
+  outf << "VEL\tmean neutron velocity in group j [cm/s]\n";
+  for (unsigned int g{0}; g < iso.vel.capacity(); ++g)
+  {
+    outf << iso.vel[g] << '\n';
+  }
+  outf << "EMAX\tmaximum energy bound of group j [eV]\n";
+  for (unsigned int g{9}; g < iso.emax.capacity(); ++g)
+  {
+    outf << iso.emax[g] << '\n';
+  }
+  outf << "EMIN\tminimum energy bound of set [eV]\n";
+  outf << iso.emin << '\n';
+  outf << "LOCA\tnumber of records to be skipped to read data for isotope i\n";
+  for (unsigned int i{0}; i <iso.loca.capacity(); ++i)
+  {
+    outf << iso.loca[i] << '\n';
+  }
+
+  outf << std::string(80,'*') << '\n';
+  outf << "INDIVIDUAL ISOTOPIC DATA\n";
+  outf << std::string(80,'*') << '\n';
+  outf << "ISOTOPE CONTROL AND GROUP INDEPENDENT DATA    (4D RECORD)\n";
+  holl_arrayWrite(outf,iso.habsid);
+  outf << "\tHABSID\thollerith absolute isotope label\n";
+  holl_arrayWrite(outf,iso.hident);
+  outf << "\tHIDENT\tidentifier of library from which basic data came\n";
+  holl_arrayWrite(outf,iso.hmat);
+  outf << "\tHMAT\tisotope identification\n";
+  outf << iso.amass << "\tAMASS\tgram atomic weight\n";
+  outf << iso.efiss << "\tEFISS\ttotal thermal energy yield/fission [W*s/fiss]\n";
+  outf << iso.ecapt << "\tECAPT\ttotal thermal energy yield/capture [W*s/capt]\n";
+  outf << iso.temp << "\tTEMP\tisotope temperature [K]\n";
+  outf << iso.sigpot << "\tSIGPOT\taverage effective potential scattering in resonance range [barns/atom]\n";
+  outf << iso.adens << "\tADENS\tdensity of isotoope in mixture in which isotope cross sections were generated (atom/barn/cm)\n";
+  outf << iso.kbr << "\tKBR\titoopte classification (see documentation)\n";
+  outf << iso.ichi << "\tICHI\tisotope fission spectrum flag\n";
+  outf << iso.ifis << "\tIFIS\t(n,f) crosss section flag\n";
+  outf << iso.ialf << "\tIALF\t(n,alpha) cross section flag\n";
+  outf << iso.inp << "\tINP\t(n,p) cross section flag\n";
+  outf << iso.in2n << "\tIN2N\t(n,2n) cross section flag\n";
+  outf << iso.ind << "\tIND\t(n,D) cross section flag\n";
+  outf << iso.intritium << "\tINT\t(n,T) cross section flag\n";
+  outf << iso.ltot << "\tLTOT\tnumber of moments of total cross section provided\n";
+  outf << iso.ltrn << "\tLTRN\tnumber of moments of transport cross section\n";
+  outf << iso.istrpd << "\tISTRPD\tnumber of coordinate directions .. (must == 0)\n";
+
 }
 
 int main()
 {
   // TO-DO: this should be a command line argument
   std::string fname("ISOTXS.u235");
-  fname = "ISOTXS.soft_fuel";
+  // fname = "ISOTXS.soft_fuel";
   // open the file as a binary file
   // TO-DO: look into endian-ness
   std::ifstream myFile (fname.c_str(), std::ios::in | std::ios::binary);
@@ -291,7 +382,7 @@ int main()
   }
 
   // TO-DO: isotxsWrite(iso_data);
-
+  isotxsWrite(iso_data);
 
 
 
