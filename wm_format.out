@@ -103,3 +103,83 @@ ISOTOPE CONTROL AND GROUP INDEPENDENT DATA    (4D RECORD)
 2	LTOT	number of moments of total cross section provided
 1	LTRN	number of moments of transport cross section
 0	ISTRPD	number of coordinate directions .. (must == 0)
+IDSCT scattering matrix identification for block N
+100
+101
+200
+201
+300
+LORD number of scattering orders in block N
+1
+1
+1
+1
+1
+JBAND number of groups that scatter into group j including self-scatter, in scattering block n
+1 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 1 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 2 2 2 2 
+2 1 2 3 4 
+5 6 7 8 9 
+10 11 12 13 14 
+15 16 17 18 19 
+20 21 22 23 24 
+25 26 27 28 29 
+30 31 32 33 1 
+2 3 4 5 6 
+7 8 9 10 11 
+12 13 14 15 15 
+16 17 18 19 20 
+20 21 22 23 21 
+20 17 1 1 1 
+1 1 1 2 3 
+4 5 6 7 8 
+9 10 11 12 13 
+14 15 16 17 18 
+19 20 21 22 23 
+24 25 26 27 28 
+29 30 31 32 33 
+IJJ position of in-group scattering cross section in scattering data for group j, scattering block n, counted from the first word of group j data
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 
+1 1 1 1 1 

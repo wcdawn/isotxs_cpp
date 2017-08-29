@@ -147,6 +147,39 @@ void isotxsWrite(const ISOTXS &iso)
   outf << iso.ltrn << "\tLTRN\tnumber of moments of transport cross section\n";
   outf << iso.istrpd << "\tISTRPD\tnumber of coordinate directions .. (must == 0)\n";
 
+  outf << "IDSCT scattering matrix identification for block N\n";
+  for (int n{0}; n < iso.nscmax; ++n)
+    outf << iso.idsct[n] << '\n';
+  outf << "LORD number of scattering orders in block N\n";
+  for (int n{0}; n < iso.nscmax; ++n)
+    outf << iso.lord[n] << '\n';
+  outf << "JBAND number of groups that scatter into group j including self-"
+    << "scatter, in scattering block n\n";
+  for (int j{0}; j < iso.ngroup; ++j)
+  {
+    for (int n{0}; n < iso.nscmax; ++n)
+    {
+      std::cout << j << ' ' << n << '\n';
+      outf << iso.jband[j][n] << ' ';
+    }
+    outf << '\n';
+  }
+  std::cout << "here1\n";
+  outf << "IJJ position of in-group scattering cross section in scattering " <<
+    "data for group j, scattering block n, counted from the first word of " << 
+    "group j data\n";
+  for (int j{0}; j < iso.ngroup; ++j)
+  {
+    for (int n{0}; n < iso.nscmax; ++n)
+    {
+      outf << iso.ijj[j][n] << ' ';
+    }
+    outf << '\n';
+  }
+
+  std::cout << "here2\n";
+
+
 }
 
 int main()
@@ -201,12 +234,12 @@ int main()
 
   iso_data.idsct.reserve(iso_data.nscmax);
   iso_data.lord.reserve(iso_data.nscmax);
-  iso_data.jband.reserve(iso_data.nscmax);
+  iso_data.jband.reserve(iso_data.ngroup);
   for (unsigned int i{0}; i < iso_data.jband.capacity(); ++i)
-    iso_data.jband[i].reserve(iso_data.ngroup);
-  iso_data.ijj.reserve(iso_data.nscmax);
+    iso_data.jband[i].reserve(iso_data.nscmax);
+  iso_data.ijj.reserve(iso_data.ngroup);
   for (unsigned int i{0}; i < iso_data.ijj.capacity(); ++i)
-    iso_data.ijj[i].reserve(iso_data.ngroup);
+    iso_data.ijj[i].reserve(iso_data.nscmax);
 
 
 
