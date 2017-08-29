@@ -159,12 +159,10 @@ void isotxsWrite(const ISOTXS &iso)
   {
     for (int n{0}; n < iso.nscmax; ++n)
     {
-      std::cout << j << ' ' << n << '\n';
       outf << iso.jband[j][n] << ' ';
     }
     outf << '\n';
   }
-  std::cout << "here1\n";
   outf << "IJJ position of in-group scattering cross section in scattering " <<
     "data for group j, scattering block n, counted from the first word of " << 
     "group j data\n";
@@ -176,8 +174,30 @@ void isotxsWrite(const ISOTXS &iso)
     }
     outf << '\n';
   }
+  outf << "STRPL PL weighted transport cross section\n";
+  for (int j{0}; j < iso.ngroup; ++j)
+  {
+    for (int l{0}; l < iso.ltrn; ++l)
+    {
+      outf << iso.strpl[j][l] << ' ';
+    }
+    outf << '\n';
+  }
+  outf << "STOTPL PL weighted total cross section\n";
+  for (int j{0}; j < iso.ngroup; ++j)
+  {
+    for (int l{0}; l < iso.ltot; ++l)
+    {
+      outf << iso.stotpl[j][l] << ' ';
+    }
+    outf << '\n';
+  }
+  outf << "SNGAM\t\tSFIS\t\tSNUTOT\t\tCHISO\t\tSNALF\t\tSNP\t\tSN2N\t\tSND\t\tSNT\n";
+  for (int j{0}; j < iso.ngroup; ++j)
+    outf << iso.sngam[j] << '\t' << iso.sfis[j] << '\t' << iso.snutot[j] <<
+      '\t' << iso.chiso[j] << '\t' << iso.snalf[j] << '\t' << iso.snp[j] << 
+      '\t' << iso.sn2n[j] << '\t' << iso.snd[j] << '\t' << iso.snt[j] << '\n';
 
-  std::cout << "here2\n";
 
 
 }
@@ -323,12 +343,12 @@ int main()
     recordChange(myFile);
     
     
-    iso_data.strpl.reserve(iso_data.ltrn);
+    iso_data.strpl.reserve(iso_data.ngroup);
     for (unsigned int i{0}; i < iso_data.strpl.capacity(); ++i)
-      iso_data.strpl[i].reserve(iso_data.ngroup);
-    iso_data.stotpl.reserve(iso_data.ltot);
+      iso_data.strpl[i].reserve(iso_data.ltrn);
+    iso_data.stotpl.reserve(iso_data.ngroup);
     for (unsigned int i{0}; i < iso_data.stotpl.capacity(); ++i)
-      iso_data.stotpl[i].reserve(iso_data.ngroup);
+      iso_data.stotpl[i].reserve(iso_data.ltot);
     iso_data.sngam.reserve(iso_data.ngroup);
     iso_data.sfis.reserve(iso_data.ngroup);
     iso_data.snutot.reserve(iso_data.ngroup);
