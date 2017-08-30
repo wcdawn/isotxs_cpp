@@ -31,11 +31,11 @@ void vectorRead(std::ifstream &file, std::vector<auto> &vec)
 
 void matrixRead(std::ifstream &file, std::vector<std::vector<auto>> &mat)
 {
-  for (unsigned int i{0}; i < mat.capacity(); ++i)
+  for (unsigned int i{0}; i < mat[0].capacity(); ++i)
   {
-    for (unsigned int j{0}; j < mat[i].capacity(); ++j)
+    for (unsigned int j{0}; j < mat.capacity(); ++j)
     {
-      bRead(file,mat[i][j]);
+      bRead(file,mat[j][i]);
     }
   }
 }
@@ -159,7 +159,7 @@ void isotxsWrite(const ISOTXS &iso)
   {
     for (int n{0}; n < iso.nscmax; ++n)
     {
-      outf << iso.jband[j][n] << ' ';
+      outf << std::setw(4) << iso.jband[j][n] << ' ';
     }
     outf << '\n';
   }
@@ -251,7 +251,6 @@ int main()
   
   
   
-  
   iso_data.hisonm.reserve(iso_data.niso);
   iso_data.chi.reserve(iso_data.ngroup);
   iso_data.vel.reserve(iso_data.ngroup);
@@ -259,18 +258,18 @@ int main()
   iso_data.loca.reserve(iso_data.niso);
 
   iso_data.chi_fw.reserve(iso_data.ichist);
-  for (unsigned int i{0}; i < iso_data.chi_fw.capacity(); ++i)
-    iso_data.chi_fw[i].reserve(iso_data.ngroup);
+  for (unsigned int k{0}; k < iso_data.chi_fw.capacity(); ++k)
+    iso_data.chi_fw[k].reserve(iso_data.ngroup);
   iso_data.isspec.reserve(iso_data.ngroup);
 
   iso_data.idsct.reserve(iso_data.nscmax);
   iso_data.lord.reserve(iso_data.nscmax);
   iso_data.jband.reserve(iso_data.ngroup);
-  for (unsigned int i{0}; i < iso_data.jband.capacity(); ++i)
-    iso_data.jband[i].reserve(iso_data.nscmax);
+  for (unsigned int j{0}; j < iso_data.jband.capacity(); ++j)
+    iso_data.jband[j].reserve(iso_data.nscmax);
   iso_data.ijj.reserve(iso_data.ngroup);
-  for (unsigned int i{0}; i < iso_data.ijj.capacity(); ++i)
-    iso_data.ijj[i].reserve(iso_data.nscmax);
+  for (unsigned int j{0}; j < iso_data.ijj.capacity(); ++j)
+    iso_data.ijj[j].reserve(iso_data.nscmax);
 
 
 
@@ -318,8 +317,8 @@ int main()
     std::cout << "--- end 3D\n";
   }
 
-  iso_data.stotpl.reserve(iso_data.ngroup);
   iso_data.strpl.reserve(iso_data.ngroup);
+  iso_data.stotpl.reserve(iso_data.ngroup);
   iso_data.sngam.reserve(iso_data.ngroup);
   iso_data.sfis.reserve(iso_data.ngroup);
   iso_data.snutot.reserve(iso_data.ngroup);
@@ -434,39 +433,32 @@ int main()
       if (iso_data.lord[n] > 0)
       {
         // do stuff
-      }
-    }
-
-
-
-
-
-
-
-
-
-
-    /*
-    iso_data.scat.reserve(iso_data.nscmax);
-    for (int n{0}; n < iso_data.nscmax; ++n)
-    {
-      if (iso_data.lord[n] > 0)
-      {
         recordChange(myFile);
-        
         int kmax{0};
         for (int j{0}; j < iso_data.ngroup; ++j)
+        {
           kmax += iso_data.jband[j][n];
+        }
         iso_data.scat[n].reserve(kmax);
-        for (unsigned int k{0}; k < iso_data.scat[n].capacity(); ++k)
+        for (int k{0}; k < kmax; ++k)
+        {
           iso_data.scat[n][k].reserve(iso_data.lord[n]);
+        }
         matrixRead(myFile,iso_data.scat[n]);
         recordChange(myFile);
         std::cout << "--- end 7D\n";
-        // TO-DO: .resize(0)
       }
     }
-    */
+
+
+
+
+
+
+
+
+
+
   }
 
   // TO-DO: isotxsWrite(iso_data);
