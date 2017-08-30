@@ -70,7 +70,7 @@ struct ISOTXS
   std::vector<std::vector<float>> chiiso;
   std::vector<float> isopec;
 
-  std::vector<std::vector<std::vector<float>>> scat;
+  std::vector<std::vector<std::vector<float>>> scat; // yeah, it's 3D
 };
 
 

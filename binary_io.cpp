@@ -202,6 +202,17 @@ void isotxsWrite(const ISOTXS &iso)
 
 }
 
+// TO-DO: delete this. it's for debugging.
+void dummyIntOut(std::ifstream &file)
+{
+  for (int i{0}; i < 100; ++i)
+  {
+    int32_t dummy{0};
+    bRead(file,dummy);
+    std::cout << dummy << '\n';
+  }
+}
+
 int main()
 {
   // TO-DO: this should be a command line argument
@@ -418,6 +429,25 @@ int main()
     }
 
     iso_data.scat.reserve(iso_data.nscmax);
+    for (unsigned int n{0}; n < iso_data.scat.capacity(); ++n)
+    {
+      if (iso_data.lord[n] > 0)
+      {
+        // do stuff
+      }
+    }
+
+
+
+
+
+
+
+
+
+
+    /*
+    iso_data.scat.reserve(iso_data.nscmax);
     for (int n{0}; n < iso_data.nscmax; ++n)
     {
       if (iso_data.lord[n] > 0)
@@ -431,23 +461,18 @@ int main()
         for (unsigned int k{0}; k < iso_data.scat[n].capacity(); ++k)
           iso_data.scat[n][k].reserve(iso_data.lord[n]);
         matrixRead(myFile,iso_data.scat[n]);
-        /* 
-        for (int i{0}; i < 100; ++i)
-        {
-          int32_t dummy{0};
-          bRead(myFile,dummy);
-          std::cout << dummy << '\n';
-        }
-        */
         recordChange(myFile);
         std::cout << "--- end 7D\n";
         // TO-DO: .resize(0)
       }
     }
+    */
   }
 
   // TO-DO: isotxsWrite(iso_data);
   // there will need to be a separate write for each isotope
+  // convieniently (obviously) this will mimic how we create an xsLib
+  // we should focus on storing micros and then passing micros & nden to DIF3D
   isotxsWrite(iso_data);
 
 
