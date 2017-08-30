@@ -197,6 +197,11 @@ void isotxsWrite(const ISOTXS &iso)
     outf << iso.sngam[j] << '\t' << iso.sfis[j] << '\t' << iso.snutot[j] <<
       '\t' << iso.chiso[j] << '\t' << iso.snalf[j] << '\t' << iso.snp[j] << 
       '\t' << iso.sn2n[j] << '\t' << iso.snd[j] << '\t' << iso.snt[j] << '\n';
+  outf << "SCATTERING SUB-BLOCK    (7D RECORD)\n";
+  for (int n{0}; n < iso.nscmax; ++n)
+  {
+    outf << "block id " << iso.idsct[n] << " order " << iso.lord[n] << '\n';
+  }
 
 
 
