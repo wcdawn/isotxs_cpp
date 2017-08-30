@@ -192,7 +192,7 @@ void isotxsWrite(const ISOTXS &iso)
     }
     outf << '\n';
   }
-  outf << "SNGAM\t\tSFIS\t\tSNUTOT\t\tCHISO\t\tSNALF\t\tSNP\t\tSN2N\t\tSND\t\tSNT\n";
+  outf << "SNGAM\tSFIS\tSNUTOT\tCHISO\tSNALF\tSNP\tSN2N\tSND\tSNT\n";
   for (int j{0}; j < iso.ngroup; ++j)
     outf << iso.sngam[j] << '\t' << iso.sfis[j] << '\t' << iso.snutot[j] <<
       '\t' << iso.chiso[j] << '\t' << iso.snalf[j] << '\t' << iso.snp[j] << 
@@ -306,6 +306,19 @@ int main()
     recordChange(myFile);
     std::cout << "--- end 3D\n";
   }
+
+  iso_data.stotpl.reserve(iso_data.ngroup);
+  iso_data.strpl.reserve(iso_data.ngroup);
+  iso_data.sngam.reserve(iso_data.ngroup);
+  iso_data.sfis.reserve(iso_data.ngroup);
+  iso_data.snutot.reserve(iso_data.ngroup);
+  iso_data.chiso.reserve(iso_data.ngroup);
+  iso_data.snalf.reserve(iso_data.ngroup);
+  iso_data.snp.reserve(iso_data.ngroup);
+  iso_data.sn2n.reserve(iso_data.ngroup);
+  iso_data.snd.reserve(iso_data.ngroup);
+  iso_data.snt.reserve(iso_data.ngroup);
+  // this next loop is for the individual isotopic data
   for (int i{0}; i < iso_data.niso; ++i);
   {
     recordChange(myFile);
@@ -343,48 +356,33 @@ int main()
     recordChange(myFile);
     
     
-    iso_data.strpl.reserve(iso_data.ngroup);
     for (unsigned int i{0}; i < iso_data.strpl.capacity(); ++i)
       iso_data.strpl[i].reserve(iso_data.ltrn);
-    iso_data.stotpl.reserve(iso_data.ngroup);
     for (unsigned int i{0}; i < iso_data.stotpl.capacity(); ++i)
       iso_data.stotpl[i].reserve(iso_data.ltot);
-    iso_data.sngam.reserve(iso_data.ngroup);
-    iso_data.sfis.reserve(iso_data.ngroup);
-    iso_data.snutot.reserve(iso_data.ngroup);
-    iso_data.chiso.reserve(iso_data.ngroup);
-    iso_data.snalf.reserve(iso_data.ngroup);
-    iso_data.snp.reserve(iso_data.ngroup);
-    iso_data.sn2n.reserve(iso_data.ngroup);
-    iso_data.snd.reserve(iso_data.ngroup);
-    iso_data.snt.reserve(iso_data.ngroup);
-    
-    iso_data.chiiso.reserve(iso_data.ngroup);
-    for (unsigned int i{0}; i < iso_data.chiiso.capacity(); ++i)
-      iso_data.chiiso[i].reserve(iso_data.ichi);
-    iso_data.isopec.reserve(iso_data.ngroup);
-
 
     std::cout << "--- end 4D\n";
     recordChange(myFile);
-    for (int32_t g{0}; g < iso_data.ngroup; ++g)
+    for (int32_t j{0}; j < iso_data.ngroup; ++j)
     {
-      iso_data.sngam[g] = 0.0f;
-      iso_data.sfis[g] = 0.0f;
-      iso_data.snutot[g] = 0.0f;
-      iso_data.chiso[g] = 0.0f;
-      iso_data.snalf[g] = 0.0f;
-      iso_data.snp[g] = 0.0f;
-      iso_data.sn2n[g] = 0.0f;
-      iso_data.snd[g] = 0.0f;
-      iso_data.snt[g] = 0.0f;
+      iso_data.sngam[j]  = 0.0f;
+      iso_data.sfis[j]   = 0.0f;
+      iso_data.snutot[j] = 0.0f;
+      iso_data.chiso[j]  = 0.0f;
+      iso_data.snalf[j]  = 0.0f;
+      iso_data.snp[j]    = 0.0f;
+      iso_data.sn2n[j]   = 0.0f;
+      iso_data.snd[j]    = 0.0f;
+      iso_data.snt[j]    = 0.0f;
+      for (int32_t l{0}; l < iso_data.ltrn; ++l)
+        iso_data.strpl[j][l] = 0.0f;
+      for (int32_t l{0}; l < iso_data.ltot; ++l)
+        iso_data.stotpl[j][l] = 0.0f;
     } 
     matrixRead(myFile,iso_data.strpl);
     matrixRead(myFile,iso_data.stotpl);
+
     vectorRead(myFile,iso_data.sngam);
-    // TO-DO: make sure all xs initialized to 0.0
-
-
     if (iso_data.ifis > 0)
     {
       vectorRead(myFile,iso_data.sfis);
@@ -404,29 +402,43 @@ int main()
       vectorRead(myFile,iso_data.snt);
     recordChange(myFile);
     std::cout << "--- end 5D\n";
+    
     if (iso_data.ichi > 1)
     {
       msg << "this is untested. no file from the test suite has ichi > 1\n";
       raiseWarn();
       recordChange(myFile);
+      iso_data.chiiso.reserve(iso_data.ngroup);
+      for (unsigned int i{0}; i < iso_data.chiiso.capacity(); ++i)
+        iso_data.chiiso[i].reserve(iso_data.ichi);
+      iso_data.isopec.reserve(iso_data.ngroup);
       matrixRead(myFile,iso_data.chiiso);
       vectorRead(myFile,iso_data.isopec);
       recordChange(myFile);
     }
 
     iso_data.scat.reserve(iso_data.nscmax);
-    for (int j{0}; j < iso_data.nscmax; ++j)
+    for (int n{0}; n < iso_data.nscmax; ++n)
     {
-      if (iso_data.lord[j] > 0)
+      if (iso_data.lord[n] > 0)
       {
         recordChange(myFile);
+        
         int kmax{0};
-        for (int k{0}; k < iso_data.ngroup; ++k)
-          kmax += iso_data.jband[j][k];
-        iso_data.scat[j].reserve(kmax);
-        for (unsigned int k{0}; k < iso_data.scat[j].capacity(); ++k)
-          iso_data.scat[j][k].reserve(iso_data.lord[j]);
-        matrixRead(myFile,iso_data.scat[j]);
+        for (int j{0}; j < iso_data.ngroup; ++j)
+          kmax += iso_data.jband[j][n];
+        iso_data.scat[n].reserve(kmax);
+        for (unsigned int k{0}; k < iso_data.scat[n].capacity(); ++k)
+          iso_data.scat[n][k].reserve(iso_data.lord[n]);
+        matrixRead(myFile,iso_data.scat[n]);
+        /* 
+        for (int i{0}; i < 100; ++i)
+        {
+          int32_t dummy{0};
+          bRead(myFile,dummy);
+          std::cout << dummy << '\n';
+        }
+        */
         recordChange(myFile);
         std::cout << "--- end 7D\n";
         // TO-DO: .resize(0)
@@ -435,6 +447,7 @@ int main()
   }
 
   // TO-DO: isotxsWrite(iso_data);
+  // there will need to be a separate write for each isotope
   isotxsWrite(iso_data);
 
 
